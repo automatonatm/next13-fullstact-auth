@@ -7,18 +7,14 @@ import CredentialsProvider from "next-auth/providers/credentials";
 const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
-     
       name: "Credentials",
-      
+
       credentials: {
         email: { label: "Email", type: "text", placeholder: "user@mail.com" },
         password: { label: "Password", type: "password" },
       },
 
       async authorize(credentials, req) {
-
-       
-        
         const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           body: JSON.stringify({
@@ -30,8 +26,6 @@ const authOptions: AuthOptions = {
 
         const user = await res.json();
 
-       
-
         // If no error and we have user data, return it
         if (res.ok && user) {
           return user;
@@ -41,9 +35,19 @@ const authOptions: AuthOptions = {
       },
     }),
   ],
-  
 
+  debug: process.env.NODE_ENV === "development",
 
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+
+    async session({ session, token }) {
+      session.user = token as any;
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

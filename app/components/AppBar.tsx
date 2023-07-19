@@ -10,9 +10,10 @@ const AppBar = () => {
       </Link>
       <Link
         className="transition-colors hover:text-blue-500"
-        href={"/UserPost"}
+        href={"/posts"}
       >
         User Post Page
+        
       </Link>
        <SigninButton /> 
     </header>
